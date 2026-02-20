@@ -3,19 +3,29 @@ let pendingUploadInfo = null;
 function initUpload() {
     const uploadBtn = document.getElementById('uploadBtn');
     uploadBtn.addEventListener('click', () => {
+        const config = loadCloudinaryConfig();
+        if (!config || !config.cloudName || !config.uploadPreset) {
+            showSetupModal();
+            return;
+        }
+
         const widget = cloudinary.createUploadWidget(
             {
-                cloudName: CLOUDINARY_CONFIG.cloudName,
-                uploadPreset: CLOUDINARY_CONFIG.uploadPreset,
+                cloudName: config.cloudName,
+                uploadPreset: config.uploadPreset,
                 sources: ['local', 'camera'],
                 multiple: false,
                 maxFiles: 1,
                 clientAllowedFormats: ['image', 'video', 'audio', 'pdf', 'doc', 'txt'],
-                maxFileSize: 100000000, // 100MB
+                maxFileSize: 100000000,
                 language: 'id'
             },
             (error, result) => {
-                if (!error && result && result.event === 'success') {
+                if (error) {
+                    alert('Gagal mengupload: ' + (error.message || 'Periksa konfigurasi Cloudinary.'));
+                    return;
+                }
+                if (result && result.event === 'success') {
                     pendingUploadInfo = {
                         publicId: result.info.public_id,
                         url: result.info.secure_url,
