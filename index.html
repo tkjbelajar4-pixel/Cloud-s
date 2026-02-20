@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neverlabs Cloud's</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 </head>
@@ -12,20 +13,22 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>Neverlabs Cloud's</h2>
-                <button id="newFolderBtn" class="btn-icon">+ Folder</button>
+                <div>
+                    <button id="settingsBtn" class="btn-icon"><i class="fas fa-cog"></i></button>
+                    <button id="newFolderBtn" class="btn-icon"><i class="fas fa-folder-plus"></i></button>
+                </div>
             </div>
             <nav class="folder-tree" id="folderTree"></nav>
         </aside>
         <main class="main-content">
             <header class="content-header">
                 <h3 id="currentFolderTitle">Root</h3>
-                <button id="uploadBtn" class="btn-primary">Upload Media</button>
+                <button id="uploadBtn" class="btn-primary"><i class="fas fa-upload"></i> Upload Media</button>
             </header>
             <div class="file-grid" id="fileGrid"></div>
         </main>
     </div>
 
-    <!-- Modal for new folder -->
     <div id="folderModal" class="modal">
         <div class="modal-content">
             <h3>Buat Folder Baru</h3>
@@ -37,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Modal for after upload (name & path) -->
     <div id="uploadMetaModal" class="modal">
         <div class="modal-content">
             <h3>Detail Media</h3>
@@ -46,6 +48,48 @@
             <div class="modal-actions">
                 <button id="cancelMetaBtn">Batal</button>
                 <button id="saveMetaBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <h3>Ubah Nama</h3>
+            <input type="text" id="renameInput" placeholder="Nama baru" autocomplete="off">
+            <div class="modal-actions">
+                <button id="cancelRenameBtn">Batal</button>
+                <button id="saveRenameBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <h3>Hapus Item</h3>
+            <p>Apakah Anda yakin ingin menghapus item ini?</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteBtn">Batal</button>
+                <button id="confirmDeleteBtn" class="btn-primary" style="background-color:#b33;">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="setupModal" class="modal">
+        <div class="modal-content" style="max-width:500px;">
+            <h3>Konfigurasi Cloudinary</h3>
+            <p style="margin-bottom:15px; color:#b0c4de;">Masukkan Cloud Name dan Upload Preset dari akun Cloudinary Anda. Data ini disimpan hanya di perangkat Anda.</p>
+            <p style="font-size:0.9rem; background:#1a1d23; padding:10px; border-radius:8px;">
+                <strong>Cara mendapatkannya:</strong><br>
+                1. Daftar/login di <a href="https://cloudinary.com" target="_blank" style="color:#7f9fcf;">Cloudinary</a><br>
+                2. Salin <strong>Cloud Name</strong> dari dashboard.<br>
+                3. Buat <strong>Upload Preset</strong> (Settings > Upload > Add upload preset, pilih unsigned).<br>
+                4. Masukkan kedua nilai di bawah.
+            </p>
+            <input type="text" id="setupCloudName" placeholder="Cloud Name" autocomplete="off">
+            <input type="text" id="setupUploadPreset" placeholder="Upload Preset" autocomplete="off">
+            <div class="modal-actions">
+                <button id="setupCancelBtn">Batal</button>
+                <button id="setupSaveBtn" class="btn-primary">Simpan</button>
             </div>
         </div>
     </div>
