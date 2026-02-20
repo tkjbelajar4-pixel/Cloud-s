@@ -1,0 +1,139 @@
+body {
+    background-color: #0a0c0f;
+    color: #e8eef2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.back-link {
+    color: #7f8fa3;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 8px 16px;
+    background-color: #1a1d23;
+    border-radius: 30px;
+    border: 1px solid #2a2f38;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.back-link:hover {
+    background-color: #2a2f38;
+    color: white;
+}
+
+.preview-header h1 {
+    font-size: 2rem;
+    font-weight: 400;
+    color: #d6e3ff;
+    word-break: break-word;
+    flex: 1 1 auto;
+    min-width: 200px;
+}
+
+.preview-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.preview-media {
+    background-color: #111316;
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #2a2f38;
+    margin-bottom: 20px;
+    min-height: 400px;
+}
+
+.preview-media img,
+.preview-media video,
+.preview-media audio {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.quality-toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.quality-btn {
+    background: #1a1d23;
+    border: 1px solid #3a4050;
+    color: #b0c4de;
+    padding: 6px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.quality-btn.active {
+    background: #3b4b6e;
+    color: white;
+    border-color: #5f7bbf;
+}
+
+.preview-info {
+    background-color: #1a1d23;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #2a2f38;
+    color: #b0c4de;
+    line-height: 1.6;
+}
+
+.preview-info a {
+    color: #7f9fcf;
+    text-decoration: none;
+}
+
+.preview-info i {
+    margin-right: 5px;
+}
+
+@media (max-width: 700px) {
+    .preview-header {
+        gap: 10px;
+    }
+    .preview-header h1 {
+        font-size: 1.5rem;
+        min-width: 150px;
+        order: 1;
+    }
+    .preview-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+        order: 2;
+    }
+    .back-link {
+        order: 0;
+    }
+}
