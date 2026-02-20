@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neverlabs Cloud's</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Neverlabs Cloud's</h2>
+                <button id="newFolderBtn" class="btn-icon">+ Folder</button>
+            </div>
+            <nav class="folder-tree" id="folderTree"></nav>
+        </aside>
+        <main class="main-content">
+            <header class="content-header">
+                <h3 id="currentFolderTitle">Root</h3>
+                <button id="uploadBtn" class="btn-primary">Upload Media</button>
+            </header>
+            <div class="file-grid" id="fileGrid"></div>
+        </main>
+    </div>
+
+    <!-- Modal for new folder -->
+    <div id="folderModal" class="modal">
+        <div class="modal-content">
+            <h3>Buat Folder Baru</h3>
+            <input type="text" id="folderNameInput" placeholder="Nama folder" autocomplete="off">
+            <div class="modal-actions">
+                <button id="cancelFolderBtn">Batal</button>
+                <button id="saveFolderBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for after upload (name & path) -->
+    <div id="uploadMetaModal" class="modal">
+        <div class="modal-content">
+            <h3>Detail Media</h3>
+            <input type="text" id="mediaNameInput" placeholder="Nama tampilan" autocomplete="off">
+            <select id="mediaFolderSelect"></select>
+            <div class="modal-actions">
+                <button id="cancelMetaBtn">Batal</button>
+                <button id="saveMetaBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
