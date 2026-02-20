@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview Media | Neverlabs Cloud's</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/preview.css">
 </head>
 <body>
     <div class="preview-container">
         <header class="preview-header">
-            <a href="index.html" class="back-link">← Kembali ke Cloud</a>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Cloud</a>
             <h1 id="previewTitle">Loading...</h1>
+            <div class="preview-actions">
+                <button id="copyLinkBtn" class="btn-icon" title="Salin tautan"><i class="fas fa-link"></i></button>
+                <button id="shareBtn" class="btn-icon" title="Bagikan"><i class="fas fa-share-alt"></i></button>
+            </div>
         </header>
         <div class="preview-media" id="previewMedia"></div>
+        <div class="quality-toolbar" id="qualityToolbar" style="display: none;">
+            <button data-quality="auto" class="quality-btn active">Auto</button>
+            <button data-quality="hd" class="quality-btn">HD</button>
+            <button data-quality="4k" class="quality-btn">4K</button>
+        </div>
         <div class="preview-info" id="previewInfo"></div>
     </div>
 
