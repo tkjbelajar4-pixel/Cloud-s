@@ -33,13 +33,13 @@
                 <div class="header-buttons">
                     <button id="uploadBtn" class="btn-primary"><i class="fas fa-upload"></i> <span>Upload Media</span></button>
                     <button id="newFolderBtn" class="btn-primary"><i class="fas fa-folder-plus"></i> <span>Folder Baru</span></button>
+                    <button id="newTextNoteBtn" class="btn-primary"><i class="fas fa-file-alt"></i> <span>Buat Teks</span></button>
                 </div>
             </header>
             <div class="file-grid" id="fileGrid"></div>
         </main>
     </div>
 
-    <!-- Modals (unchanged) -->
     <div id="folderModal" class="modal">
         <div class="modal-content">
             <h3>Buat Folder Baru</h3>
@@ -85,22 +85,48 @@
         </div>
     </div>
 
+    <div id="textNoteModal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <h3>Buat Catatan Teks Baru</h3>
+            <input type="text" id="textNoteName" placeholder="Nama catatan" autocomplete="off" class="code-editor-textarea" style="margin-bottom:16px;">
+            <textarea id="textNoteContent" placeholder="Isi teks..." rows="10" class="code-editor-textarea"></textarea>
+            <div class="modal-actions">
+                <button id="cancelTextNoteBtn" class="btn-secondary">Batal</button>
+                <button id="saveTextNoteBtn" class="btn-secondary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <div id="setupModal" class="modal">
-        <div class="modal-content" style="max-width:500px;">
+        <div class="modal-content" style="max-width:600px;">
             <h3>Konfigurasi Cloudinary</h3>
-            <p style="margin-bottom:15px; color:#b0c4de;">Masukkan Cloud Name dan Upload Preset dari akun Cloudinary Anda. Data ini disimpan hanya di perangkat Anda.</p>
+            <p style="margin-bottom:15px; color:#b0c4de;">Masukkan konfigurasi untuk media (gambar/video) dan teks (file teks). Data ini disimpan hanya di perangkat Anda.</p>
+
+            <h4 style="color:#d6e3ff; margin-bottom:10px;">Media Storage</h4>
             <p style="font-size:0.9rem; background:#1a1d23; padding:10px; border-radius:8px;">
                 <strong>Cara mendapatkannya:</strong><br>
                 1. Daftar/login di <a href="https://cloudinary.com" target="_blank" style="color:#7f9fcf;">Cloudinary</a><br>
                 2. Salin <strong>Cloud Name</strong> dari dashboard.<br>
                 3. Buat <strong>Upload Preset</strong> (Settings > Upload > Add upload preset, pilih unsigned).<br>
-                4. Masukkan kedua nilai di bawah.
             </p>
-            <input type="text" id="setupCloudName" placeholder="Cloud Name" autocomplete="off">
-            <input type="text" id="setupUploadPreset" placeholder="Upload Preset" autocomplete="off">
+            <input type="text" id="setupCloudName" placeholder="Media Cloud Name" autocomplete="off">
+            <input type="text" id="setupUploadPreset" placeholder="Media Upload Preset" autocomplete="off">
+            <input type="text" id="setupApiKey" placeholder="Media API Key (opsional)" autocomplete="off">
+            <input type="password" id="setupApiSecret" placeholder="Media API Secret (opsional)" autocomplete="off">
+
+            <h4 style="color:#d6e3ff; margin:20px 0 10px;">Text Storage</h4>
+            <p style="font-size:0.9rem; background:#1a1d23; padding:10px; border-radius:8px;">
+                <strong>Gunakan Cloudinary juga untuk teks, atau isi dengan layanan lain (Backblaze B2, dll) - untuk demo kita pakai Cloudinary.</strong><br>
+                Jika menggunakan Cloudinary, buat upload preset terpisah untuk raw file.
+            </p>
+            <input type="text" id="setupTextCloudName" placeholder="Text Cloud Name" autocomplete="off">
+            <input type="text" id="setupTextUploadPreset" placeholder="Text Upload Preset" autocomplete="off">
+            <input type="text" id="setupTextApiKey" placeholder="Text API Key (opsional)" autocomplete="off">
+            <input type="password" id="setupTextApiSecret" placeholder="Text API Secret (opsional)" autocomplete="off">
+
             <div class="modal-actions">
                 <button id="setupCancelBtn">Batal</button>
-                <button id="setupSaveBtn" class="btn-primary">Simpan</button>
+                <button id="setupSaveBtn" class="btn-secondary">Simpan</button>
             </div>
         </div>
     </div>
