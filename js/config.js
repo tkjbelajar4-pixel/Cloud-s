@@ -12,10 +12,17 @@ function loadCloudinaryConfig() {
     return null;
 }
 
-function saveCloudinaryConfig(cloudName, uploadPreset) {
-    const config = { cloudName, uploadPreset };
+function saveCloudinaryConfig(cloudName, uploadPreset, apiKey = '', apiSecret = '', 
+                              textCloudName = '', textUploadPreset = '', textApiKey = '', textApiSecret = '') {
+    const config = { 
+        cloudName, uploadPreset, apiKey, apiSecret,
+        textCloudName, textUploadPreset, textApiKey, textApiSecret
+    };
     localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
     return config;
 }
 
-let CLOUDINARY_CONFIG = loadCloudinaryConfig() || { cloudName: '', uploadPreset: '' };
+let CLOUDINARY_CONFIG = loadCloudinaryConfig() || { 
+    cloudName: '', uploadPreset: '', apiKey: '', apiSecret: '',
+    textCloudName: '', textUploadPreset: '', textApiKey: '', textApiSecret: ''
+};
