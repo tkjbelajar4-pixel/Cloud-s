@@ -1,85 +1,155 @@
-const STORAGE_KEY = 'neverlabs_cloud_data';
+const DB_NAME = 'NeverlabsDB';
+const DB_VERSION = 1;
+let db = null;
 
-function getData() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-        const initial = { version: 1, items: [] };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
-        return initial;
-    }
-    try {
-        return JSON.parse(raw);
-    } catch {
-        return { version: 1, items: [] };
-    }
+function openDB() {
+    return new Promise((resolve, reject) => {
+        if (db) return resolve(db);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+            db = request.result;
+            resolve(db);
+        };
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('items')) {
+                const itemStore = db.createObjectStore('items', { keyPath: 'id' });
+                itemStore.createIndex('parentId', 'parentId', { unique: false });
+                itemStore.createIndex('type', 'type', { unique: false });
+            }
+            if (!db.objectStoreNames.contains('files')) {
+                db.createObjectStore('files', { keyPath: 'id' });
+            }
+        };
+    });
 }
 
-function saveData(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+async function getItems() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('items', 'readonly');
+        const store = tx.objectStore('items');
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
 }
 
-function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+async function getItem(id) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('items', 'readonly');
+        const store = tx.objectStore('items');
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+    });
 }
 
-function getCurrentFolderId() {
-    return sessionStorage.getItem('currentFolderId') || null;
-}
-
-function setCurrentFolderId(id) {
-    if (id === null) {
-        sessionStorage.removeItem('currentFolderId');
-    } else {
-        sessionStorage.setItem('currentFolderId', id);
-    }
-}
-
-function getFolderPath(folderId) {
-    const data = getData();
-    const path = [];
-    let current = folderId ? data.items.find(i => i.id === folderId) : null;
-    while (current) {
-        path.unshift(current);
-        current = data.items.find(i => i.id === current.parentId);
-    }
-    return path;
-}
-
-function addItem(item) {
-    const data = getData();
-    data.items.push(item);
-    saveData(data);
-    return item;
-}
-
-function updateItem(id, updates) {
-    const data = getData();
-    const index = data.items.findIndex(i => i.id === id);
-    if (index !== -1) {
-        data.items[index] = { ...data.items[index], ...updates };
-        saveData(data);
-        return data.items[index];
-    }
-    return null;
-}
-
-function deleteItem(id) {
-    const data = getData();
-    const children = data.items.filter(i => i.parentId === id);
-    children.forEach(child => deleteItem(child.id));
-    data.items = data.items.filter(i => i.id !== id);
-    saveData(data);
-}
-
-function getChildren(parentId) {
-    const data = getData();
-    return data.items.filter(i => i.parentId === parentId).sort((a, b) => {
+async function getChildren(parentId) {
+    const items = await getItems();
+    return items.filter(i => i.parentId === parentId).sort((a, b) => {
         if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
         return a.name.localeCompare(b.name);
     });
 }
 
-function getItem(id) {
-    const data = getData();
-    return data.items.find(i => i.id === id);
+async function addItem(item) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('items', 'readwrite');
+        const store = tx.objectStore('items');
+        const request = store.add(item);
+        request.onsuccess = () => resolve(item);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function updateItem(id, updates) {
+    const item = await getItem(id);
+    if (!item) return null;
+    const updated = { ...item, ...updates };
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('items', 'readwrite');
+        const store = tx.objectStore('items');
+        const request = store.put(updated);
+        request.onsuccess = () => resolve(updated);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteItem(id) {
+    const item = await getItem(id);
+    if (!item) return;
+    const children = await getChildren(id);
+    for (const child of children) {
+        await deleteItem(child.id);
+    }
+    if (item.type === 'file' && item.fileId) {
+        await deleteFile(item.fileId);
+    }
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('items', 'readwrite');
+        const store = tx.objectStore('items');
+        const request = store.delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveFile(blob) {
+    const fileId = generateId();
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('files', 'readwrite');
+        const store = tx.objectStore('files');
+        const request = store.add({ id: fileId, blob });
+        request.onsuccess = () => resolve(fileId);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getFile(fileId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('files', 'readonly');
+        const store = tx.objectStore('files');
+        const request = store.get(fileId);
+        request.onsuccess = () => resolve(request.result ? request.result.blob : null);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteFile(fileId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('files', 'readwrite');
+        const store = tx.objectStore('files');
+        const request = store.delete(fileId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function clearAll() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(['items', 'files'], 'readwrite');
+        tx.objectStore('items').clear();
+        tx.objectStore('files').clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+async function exportData() {
+    const items = await getItems();
+    return JSON.stringify(items, null, 2);
+}
+
+function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
 }
