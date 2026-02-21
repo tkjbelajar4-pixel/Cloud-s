@@ -148,7 +148,7 @@ Proyek ini dibuat untuk keperluan pribadi dan pembelajaran. Silakan gunakan, mod
 
 ## Kontak
 
-Untuk pertanyaan atau saran, silakan hubungi melalui [GitHub Issues](https://nflora-ux.github.io/Cloud-s/).
+Untuk pertanyaan atau saran, silakan hubungi melalui [GitHub Issues](https://github.com/nflora-ux/Cloud-s/).
 
 ---
 
