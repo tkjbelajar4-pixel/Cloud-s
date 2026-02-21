@@ -333,6 +333,8 @@ body {
     min-width: 320px;
     max-width: 400px;
     border: 1px solid #3a4050;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-content h3 {
@@ -518,5 +520,48 @@ body {
     .file-grid {
         padding: 16px;
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .code-editor-textarea {
+        background-color: #0d1117 !important;
+        color: #e6edf3 !important;
+        font-family: 'Menlo', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+        font-size: 14px;
+        line-height: 1.5;
+        border: 1px solid #30363d !important;
+        border-radius: 6px;
+        padding: 12px !important;
+        resize: vertical;
+    }
+
+    .code-editor-pre {
+        background-color: #0d1117;
+        color: #e6edf3;
+        font-family: 'Menlo', 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 16px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 70vh;
+    }
+
+    .btn-secondary {
+        background: none;
+        border: none;
+        color: #b0c4de;
+        padding: 10px 20px;
+        border-radius: 40px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #2a2f38;
+        color: white;
     }
 }
