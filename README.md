@@ -22,7 +22,7 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
   - Tampilan gambar dengan opsi kualitas (Auto, HD, 4K).
   - Pemutar video dan audio bawaan.
   - Untuk file teks (TXT, PY, JS, HTML, CSS, MD, JSON), ditampilkan dalam editor bergaya GitHub dengan sintaks highlight.
-  - Tombol salin tautan dan bagikan (Web Share API jika didukung).
+  - Tombol salin tautan dan bagikan (Web Share API jika mendukung).
 
 - **Catatan Teks**
   - Buat catatan teks baru langsung dari antarmuka.
@@ -57,19 +57,105 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 
 ---
 
-## Struktur Proyek
-/
-├── index.html # Halaman utama aplikasi
-├── preview.html # Halaman pratinjau file
-├── css/
-│ ├── style.css # Gaya utama (desktop & mobile)
-│ └── preview.css # Gaya khusus halaman pratinjau
-├── js/
-│ ├── config.js # Konfigurasi dan helper Cloudinary
-│ ├── storage.js # Manajemen localStorage (CRUD data)
-│ ├── ui.js # Render folder tree dan grid file
-│ ├── upload.js # Logika unggah media dan teks
-│ ├── app.js # Inisialisasi dan event handlers utama
-│ └── preview.js # Logika halaman pratinjau (termasuk edit teks)
-└── README.md # Dokumentasi ini
-/
+## Instalasi dan Deployment
+
+### Prasyarat
+- Akun Cloudinary (gratis).
+- Untuk fitur sinkronisasi, diperlukan API Key dan API Secret (dapatkan dari dashboard Cloudinary).
+
+### Langkah-langkah
+1. **Salin semua file** ke repositori GitHub atau hosting statis pilihan.
+2. **Konfigurasi Cloudinary**:
+   - Buat dua upload preset:
+     - Satu untuk media (gambar/video/audio) dengan mode unsigned.
+     - Satu untuk teks (raw) dengan mode unsigned.
+   - Catat **Cloud Name**, **Upload Preset Media**, dan **Upload Preset Teks**.
+3. **Buka aplikasi** melalui browser.
+4. **Isi konfigurasi** pada modal yang muncul pertama kali. Jika tidak muncul, klik ikon gear di pojok kanan bawah sidebar.
+   - Isi Media Cloud Name dan Upload Preset.
+   - Isi Text Cloud Name dan Upload Preset (bisa sama dengan media jika diinginkan).
+   - API Key dan Secret bersifat opsional, hanya diperlukan untuk sinkronisasi otomatis.
+5. **Mulai gunakan** aplikasi: buat folder, unggah media, buat catatan teks, dan bagikan tautan.
+
+### Deployment di GitHub Pages
+- Push semua file ke repositori GitHub.
+- Aktifkan GitHub Pages pada branch yang digunakan.
+- Akses aplikasi melalui `https://nflora-ux.github.io/Cloud-s/`.
+
+---
+
+## Konfigurasi Cloudinary
+
+### Membuat Upload Preset
+1. Login ke [Cloudinary Console](https://console.cloudinary.com).
+2. Buka **Settings** > **Upload**.
+3. Pada bagian **Upload presets**, klik **Add upload preset**.
+4. Beri nama (misal: `neverlabs`), pilih mode **Unsigned**.
+5. Atur opsi lain sesuai kebutuhan (folder, format yang diizinkan, dll).
+6. Simpan.
+7. Ulangi langkah di atas untuk preset teks (misal: `neverlabs_text`), pastikan tipe file yang diizinkan mencakup teks.
+
+### Mendapatkan API Key dan Secret (Opsional)
+- Pada dashboard Cloudinary, lihat bagian **Account Details**.
+- Salin **API Key** dan **API Secret**. Jangan bagikan kepada siapa pun.
+
+---
+
+## Penggunaan Aplikasi
+
+### Desktop
+- **Sidebar kiri**: Menampilkan hierarki folder. Klik folder untuk membuka isinya.
+- **Header atas**: Menampilkan nama folder saat ini dan tombol aksi:
+  - `Upload Media`: Membuka widget Cloudinary untuk unggah file.
+  - `Folder Baru`: Membuat folder baru di lokasi saat ini.
+  - `Buat Teks`: Membuka modal untuk membuat catatan teks baru.
+- **Grid file**: Menampilkan file dan folder. Klik file untuk membuka pratinjau, klik folder untuk masuk ke folder tersebut.
+- **Dropdown menu (titik tiga) pada setiap item**: Rename atau hapus item.
+
+### Mobile
+- **Header**: Menampilkan judul "Neverlabs Cloud's" dan tombol folder (drawer).
+- **Drawer navigasi**: Muncul dengan menggeser dari tepi kiri atau menekan tombol folder. Berisi hierarki folder dan footer dengan teks "Administrator" serta tombol pengaturan.
+- **Tombol aksi utama**: Berada di pojok kanan bawah (ikon bulat): unggah media, folder baru, buat teks.
+- **Kembali**: Gunakan tombol "Kembali ke Cloud" di halaman pratinjau.
+
+### Halaman Pratinjau
+- Menampilkan file sesuai tipenya.
+- **Gambar**: Toolbar kualitas (Auto, HD, 4K) untuk mengubah resolusi.
+- **Video/Audio**: Pemutar bawaan.
+- **Teks**: Tampilan editor dengan latar gelap, font monospace. Tersedia tombol **Edit** (ikon pensil) untuk mengubah isi teks.
+- **Tombol**: Salin tautan dan bagikan (jika perangkat mendukung).
+- **Informasi file**: Nama, ukuran, tanggal unggah, tipe, dan tautan ke file asli.
+
+---
+
+## Pengembangan Lebih Lanjut
+
+Aplikasi ini dirancang modular sehingga mudah dikembangkan. Beberapa ide pengembangan:
+
+- **Dukungan multi-pengguna** dengan sistem login sederhana (menggunakan localStorage berbeda).
+- **Integrasi penyimpanan lain** seperti Backblaze B2 atau Supabase.
+- **Pencarian file** di dalam folder.
+- **Drag and drop** untuk unggah dan memindahkan file.
+- **Mode offline** dengan service worker.
+
+---
+
+## Lisensi
+
+Proyek ini dibuat untuk keperluan pribadi dan pembelajaran. Silakan gunakan, modifikasi, dan distribusikan sesuai kebutuhan. Tidak ada jaminan atau dukungan resmi.
+
+---
+
+## Kontak
+
+Untuk pertanyaan atau saran, silakan hubungi melalui [GitHub Issues](https://nflora-ux.github.io/Cloud-s/).
+
+---
+
+**Catatan**: Aplikasi ini sepenuhnya berjalan di sisi klien. Pastikan untuk selalu menjaga kerahasiaan API Key dan Secret Anda.
+
+---
+
+<div align="center">
+  Copyright &copy; Neverlabs Cloud's. All rights reserved.
+</div>
