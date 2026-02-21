@@ -230,6 +230,11 @@ body {
     background-color: rgba(95, 123, 191, 0.1);
 }
 
+.main-content.drag-over {
+    border: 2px dashed #5f7bbf;
+    background-color: rgba(95, 123, 191, 0.1);
+}
+
 .file-card:hover {
     background-color: #242a33;
     transform: translateY(-2px);
