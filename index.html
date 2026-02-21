@@ -11,25 +11,37 @@
 </head>
 <body>
     <div class="app-container">
-        <aside class="sidebar">
+        <!-- Sidebar (also used as drawer on mobile) -->
+        <aside class="sidebar" id="mobileDrawer">
             <div class="sidebar-header">
                 <h2>Neverlabs Cloud's</h2>
-                <div>
-                    <button id="settingsBtn" class="btn-icon"><i class="fas fa-cog"></i></button>
-                    <button id="newFolderBtn" class="btn-icon"><i class="fas fa-folder-plus"></i></button>
-                </div>
+                <button class="drawer-folder-btn" id="drawerFolderBtn"><i class="fas fa-folder"></i></button>
             </div>
             <nav class="folder-tree" id="folderTree"></nav>
+            <div class="sidebar-footer">
+                <span class="admin-text"><b>Administrator</b></span>
+                <button id="settingsBtn" class="btn-icon"><i class="fas fa-cog"></i></button>
+            </div>
         </aside>
+
+        <!-- Overlay for drawer -->
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+
         <main class="main-content">
             <header class="content-header">
                 <h3 id="currentFolderTitle">Root</h3>
-                <button id="uploadBtn" class="btn-primary"><i class="fas fa-upload"></i> Upload Media</button>
+                <span class="mobile-header-title">Neverlabs Cloud's</span>
+                <button id="drawerToggleBtn"><i class="fas fa-folder"></i></button>
+                <div class="header-buttons">
+                    <button id="uploadBtn" class="btn-primary"><i class="fas fa-upload"></i> <span>Upload Media</span></button>
+                    <button id="newFolderBtn" class="btn-primary"><i class="fas fa-folder-plus"></i> <span>Folder Baru</span></button>
+                </div>
             </header>
             <div class="file-grid" id="fileGrid"></div>
         </main>
     </div>
 
+    <!-- Modals (unchanged) -->
     <div id="folderModal" class="modal">
         <div class="modal-content">
             <h3>Buat Folder Baru</h3>
@@ -100,5 +112,50 @@
     <script src="js/ui.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/app.js"></script>
+    <!-- Mobile drawer functionality -->
+    <script>
+        (function() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            const toggleBtn = document.getElementById('drawerToggleBtn');
+            const drawerFolderBtn = document.getElementById('drawerFolderBtn');
+
+            function openDrawer() {
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+            }
+
+            function closeDrawer() {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+
+            toggleBtn.addEventListener('click', openDrawer);
+            drawerFolderBtn.addEventListener('click', closeDrawer); // close when folder button in drawer clicked
+            overlay.addEventListener('click', closeDrawer);
+
+            // Swipe detection
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+
+            function handleSwipe() {
+                const swipeDistance = touchEndX - touchStartX;
+                if (swipeDistance > 50 && touchStartX < 30) { // swipe from left edge
+                    openDrawer();
+                } else if (swipeDistance < -50 && drawer.classList.contains('open')) {
+                    closeDrawer();
+                }
+            }
+        })();
+    </script>
 </body>
 </html>
