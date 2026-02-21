@@ -11,7 +11,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar (also used as drawer on mobile) -->
         <aside class="sidebar" id="mobileDrawer">
             <div class="sidebar-header">
                 <h2>Neverlabs Cloud's</h2>
@@ -24,7 +23,6 @@
             </div>
         </aside>
 
-        <!-- Overlay for drawer -->
         <div class="drawer-overlay" id="drawerOverlay"></div>
 
         <main class="main-content">
@@ -112,7 +110,6 @@
     <script src="js/ui.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/app.js"></script>
-    <!-- Mobile drawer functionality -->
     <script>
         (function() {
             const drawer = document.getElementById('mobileDrawer');
@@ -131,10 +128,9 @@
             }
 
             toggleBtn.addEventListener('click', openDrawer);
-            drawerFolderBtn.addEventListener('click', closeDrawer); // close when folder button in drawer clicked
+            drawerFolderBtn.addEventListener('click', closeDrawer);
             overlay.addEventListener('click', closeDrawer);
 
-            // Swipe detection
             let touchStartX = 0;
             let touchEndX = 0;
 
@@ -149,7 +145,7 @@
 
             function handleSwipe() {
                 const swipeDistance = touchEndX - touchStartX;
-                if (swipeDistance > 50 && touchStartX < 30) { // swipe from left edge
+                if (swipeDistance > 50 && touchStartX < 30) {
                     openDrawer();
                 } else if (swipeDistance < -50 && drawer.classList.contains('open')) {
                     closeDrawer();
