@@ -403,7 +403,6 @@ body {
         position: relative;
     }
 
-    /* Main content */
     .main-content {
         order: 1;
         height: 100%;
@@ -426,7 +425,6 @@ body {
         display: block;
     }
 
-    /* Move upload and new folder buttons to bottom right */
     .header-buttons {
         position: fixed;
         bottom: 20px;
@@ -453,7 +451,6 @@ body {
         margin: 0;
     }
 
-    /* Drawer (sidebar) */
     .sidebar {
         position: fixed;
         top: 0;
@@ -500,7 +497,6 @@ body {
         height: 32px;
     }
 
-    /* Overlay */
     .drawer-overlay {
         display: none;
         position: fixed;
@@ -516,7 +512,6 @@ body {
         display: block;
     }
 
-    /* File grid adjustments */
     .file-grid {
         padding: 16px;
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
