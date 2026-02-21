@@ -69,7 +69,7 @@ Dibangun dengan HTML, CSS, dan JavaScript murni, aplikasi ini responsif dan dapa
 ### Deployment di GitHub Pages
 - Push semua file ke repositori GitHub.
 - Aktifkan GitHub Pages pada branch yang digunakan.
-- Akses aplikasi melalui `https://nflora-ux.github.io/Cloud-s/`.
+- Akses aplikasi melalui `(https://nflora-ux.github.io/Cloud-s/)`.
 
 ---
 
