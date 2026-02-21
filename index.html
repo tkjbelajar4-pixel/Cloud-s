@@ -97,29 +97,29 @@
     </div>
 
     <div id="setupModal" class="modal">
-        <div class="modal-content" style="max-width:500px;">
+        <div class="modal-content">
             <h3>Tentang Aplikasi</h3>
-            <p style="margin-bottom:20px; color:#b0c4de;">Neverlabs Cloud's</p>
+            <p style="margin-bottom:20px; color:#b0c4de;">Neverlabs Cloud's — penyimpanan file lokal di browser Anda.</p>
             
             <h4 style="color:#d6e3ff; margin-bottom:10px;">Kontak Kami</h4>
-            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-                <a href="mailto:userlinuxorg@gmail.com" style="color:#7f9fcf; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fas fa-envelope"></i> userlinuxorg@gmail.com</a>
-                <a href="https://instagram.com/neveerlabs" target="_blank" style="color:#7f9fcf; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fab fa-instagram"></i> @neveerlabs</a>
-                <a href="https://wa.me/628561765372" target="_blank" style="color:#7f9fcf; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fab fa-whatsapp"></i> +62 856-1765-372</a>
-                <a href="https://github.com/neveerlabs" target="_blank" style="color:#7f9fcf; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fab fa-github"></i> neveerlabs</a>
-                <a href="https://t.me/Neverlabs" target="_blank" style="color:#7f9fcf; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fab fa-telegram"></i> @Neverlabs</a>
+            <div class="contact-grid">
+                <a href="mailto:userlinuxorg@gmail.com"><i class="fas fa-envelope"></i> userlinuxorg@gmail.com</a>
+                <a href="https://instagram.com/neveerlabs" target="_blank"><i class="fab fa-instagram"></i> @neveerlabs</a>
+                <a href="https://wa.me/628561765372" target="_blank"><i class="fab fa-whatsapp"></i> +62 856-1765-372</a>
+                <a href="https://github.com/neveerlabs" target="_blank"><i class="fab fa-github"></i> neveerlabs</a>
+                <a href="https://t.me/Neverlabs" target="_blank"><i class="fab fa-telegram"></i> @Neverlabs</a>
             </div>
 
             <h4 style="color:#d6e3ff; margin-bottom:10px;">Informasi</h4>
-            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-                <a href="https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/LICENSE" target="_blank" style="color:#7f9fcf; text-decoration:none;">Lisensi MIT</a>
-                <a href="https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/PRIVACY.md" target="_blank" style="color:#7f9fcf; text-decoration:none;">Kebijakan Privasi</a>
+            <div class="info-grid">
+                <a href="https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/LICENSE" target="_blank">Lisensi MIT</a>
+                <a href="https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/PRIVACY.md" target="_blank">Kebijakan Privasi</a>
             </div>
 
             <h4 style="color:#d6e3ff; margin-bottom:10px;">Data</h4>
-            <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-                <button id="exportDataBtn" class="btn-secondary" style="border:1px solid #3a4050;">Ekspor Data</button>
-                <button id="deleteAllDataBtn" class="btn-secondary" style="border:1px solid #b33; color:#b33;">Hapus Semua Data</button>
+            <div class="data-buttons">
+                <button id="exportDataBtn" class="btn-secondary">Ekspor Data</button>
+                <button id="deleteAllDataBtn" class="btn-secondary" style="color:#b33;">Hapus Semua Data</button>
             </div>
 
             <div class="modal-actions">
@@ -177,4 +177,3 @@
     </script>
 </body>
 </html>
-
