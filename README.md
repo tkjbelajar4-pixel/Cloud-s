@@ -1,8 +1,8 @@
 # Neverlabs Cloud's
 
-Neverlabs Cloud's adalah aplikasi web frontend statis yang memungkinkan pengguna untuk mengunggah, mengelola, dan membagikan berbagai jenis file (gambar, video, audio, dokumen, dan file teks) dengan integrasi Cloudinary. Aplikasi ini dirancang dengan antarmuka modern, responsif, dan mendukung fitur manajemen file berbasis folder, pratinjau media, serta penyuntingan teks secara langsung.
+Neverlabs Cloud's adalah aplikasi web penyimpanan file pribadi yang berjalan sepenuhnya di browser Anda. Semua file dan data disimpan secara lokal menggunakan **IndexedDB**, sehingga Anda memiliki kendali penuh atas data Anda tanpa perlu server eksternal. Aplikasi ini mendukung unggah berbagai jenis file (gambar, video, audio, dokumen, teks), manajemen folder, pratinjau, dan penyuntingan teks secara langsung.
 
-Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage untuk menyimpan metadata, aplikasi ini dapat dihosting di GitHub Pages atau layanan statis lainnya tanpa memerlukan backend server.
+Dibangun dengan HTML, CSS, dan JavaScript murni, aplikasi ini responsif dan dapat dihosting di GitHub Pages atau layanan web statis lainnya.
 
 ---
 
@@ -11,32 +11,30 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 - **Manajemen File & Folder**
   - Buat, hapus, dan ubah nama folder.
   - Navigasi folder secara hierarkis.
-  - Pindahkan file antar folder.
+  - Pindahkan file secara otomatis saat mengunggah ke folder tertentu.
 
-- **Unggah Media**
-  - Unggah gambar, video, audio, dan dokumen (PDF, DOC, TXT, dll.) melalui widget Cloudinary.
-  - Dukungan untuk berbagai format file dengan batasan ukuran 100MB.
-  - Beri nama khusus untuk setiap file setelah unggah.
+- **Unggah File**
+  - Unggah satu atau beberapa file sekaligus melalui tombol atau drag and drop.
+  - Drag and drop mendukung file dan folder (termasuk struktur folder) — folder akan dibuat ulang secara otomatis.
+  - File disimpan sebagai blob di IndexedDB, metadata disimpan terpisah.
 
 - **Pratinjau Media**
-  - Tampilan gambar dengan opsi kualitas (Auto, HD, 4K).
-  - Pemutar video dan audio bawaan.
-  - Untuk file teks (TXT, PY, JS, HTML, CSS, MD, JSON), ditampilkan dalam editor bergaya GitHub dengan sintaks highlight.
-  - Tombol salin tautan dan bagikan (Web Share API jika mendukung).
+  - Tampilan gambar, video, audio, dan file teks langsung di browser.
+  - File teks (txt, js, py, html, css, md, json) ditampilkan dalam editor bergaya GitHub dengan latar gelap.
+  - Fitur edit teks pada halaman pratinjau untuk mengubah konten file teks.
 
 - **Catatan Teks**
   - Buat catatan teks baru langsung dari antarmuka.
   - Edit catatan teks yang sudah ada di halaman pratinjau.
-  - Penyimpanan teks menggunakan konfigurasi Cloudinary terpisah (raw).
 
-- **Sinkronisasi dengan Cloudinary**
-  - Ambil daftar file yang sudah ada di akun Cloudinary (memerlukan API Key dan Secret).
-  - File yang belum tercatat di localStorage akan ditambahkan secara otomatis.
+- **Ekspor dan Hapus Data**
+  - Ekspor seluruh metadata file (daftar file dan folder) ke file JSON sebagai cadangan.
+  - Hapus semua data sekaligus (termasuk semua file dan folder) dengan konfirmasi.
 
 - **Keamanan dan Privasi**
-  - Semua konfigurasi (Cloud Name, Upload Preset, API Key) disimpan di localStorage perangkat pengguna.
-  - Tidak ada data yang dikirim ke server selain ke API Cloudinary.
-  - Kredensial API bersifat opsional dan hanya digunakan untuk sinkronisasi.
+  - Semua data tersimpan di perangkat Anda sendiri (IndexedDB).
+  - Tidak ada data yang dikirim ke server eksternal.
+  - Aplikasi dapat digunakan secara offline setelah dimuat.
 
 - **Antarmuka Responsif**
   - Tampilan desktop dengan sidebar tetap.
@@ -49,33 +47,24 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 
 - **HTML5** – Struktur halaman.
 - **CSS3** – Styling modern dengan tema gelap, tata letak fleksibel, dan media query untuk responsivitas.
-- **JavaScript (ES6+)** – Logika aplikasi, manajemen state, komunikasi dengan Cloudinary.
-- **Cloudinary Widget** – Widget unggah resmi dari Cloudinary untuk kemudahan integrasi.
-- **Cloudinary REST API** – Digunakan untuk mengunggah file teks dan sinkronisasi.
+- **JavaScript (ES6+)** – Logika aplikasi, manajemen state, operasi IndexedDB.
+- **IndexedDB** – Penyimpanan file dan metadata di browser.
+- **File API** – Membaca file dari sistem pengguna.
+- **Drag and Drop API** – Mendukung unggah file dan folder.
 - **Font Awesome 6** – Ikon vektor untuk antarmuka yang menarik.
-- **localStorage & sessionStorage** – Penyimpanan metadata dan status folder.
+- **localStorage & sessionStorage** – Menyimpan preferensi folder aktif.
 
 ---
 
 ## Instalasi dan Deployment
 
 ### Prasyarat
-- Akun Cloudinary (gratis).
-- Untuk fitur sinkronisasi, diperlukan API Key dan API Secret (dapatkan dari dashboard Cloudinary).
+- Browser modern yang mendukung IndexedDB dan Drag and Drop API (Chrome, Firefox, Edge, Safari).
 
 ### Langkah-langkah
 1. **Salin semua file** ke repositori GitHub atau hosting statis pilihan.
-2. **Konfigurasi Cloudinary**:
-   - Buat dua upload preset:
-     - Satu untuk media (gambar/video/audio) dengan mode unsigned.
-     - Satu untuk teks (raw) dengan mode unsigned.
-   - Catat **Cloud Name**, **Upload Preset Media**, dan **Upload Preset Teks**.
-3. **Buka aplikasi** melalui browser.
-4. **Isi konfigurasi** pada modal yang muncul pertama kali. Jika tidak muncul, klik ikon gear di pojok kanan bawah sidebar.
-   - Isi Media Cloud Name dan Upload Preset.
-   - Isi Text Cloud Name dan Upload Preset (bisa sama dengan media jika diinginkan).
-   - API Key dan Secret bersifat opsional, hanya diperlukan untuk sinkronisasi otomatis.
-5. **Mulai gunakan** aplikasi: buat folder, unggah media, buat catatan teks, dan bagikan tautan.
+2. **Buka aplikasi** melalui browser.
+3. **Mulai gunakan** aplikasi: buat folder, unggah file, buat catatan teks, dan kelola data Anda.
 
 ### Deployment di GitHub Pages
 - Push semua file ke repositori GitHub.
@@ -84,33 +73,17 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 
 ---
 
-## Konfigurasi Cloudinary
-
-### Membuat Upload Preset
-1. Login ke [Cloudinary Console](https://console.cloudinary.com).
-2. Buka **Settings** > **Upload**.
-3. Pada bagian **Upload presets**, klik **Add upload preset**.
-4. Beri nama (misal: `neverlabs`), pilih mode **Unsigned**.
-5. Atur opsi lain sesuai kebutuhan (folder, format yang diizinkan, dll).
-6. Simpan.
-7. Ulangi langkah di atas untuk preset teks (misal: `neverlabs_text`), pastikan tipe file yang diizinkan mencakup teks.
-
-### Mendapatkan API Key dan Secret (Opsional)
-- Pada dashboard Cloudinary, lihat bagian **Account Details**.
-- Salin **API Key** dan **API Secret**. Jangan bagikan kepada siapa pun.
-
----
-
 ## Penggunaan Aplikasi
 
 ### Desktop
 - **Sidebar kiri**: Menampilkan hierarki folder. Klik folder untuk membuka isinya.
 - **Header atas**: Menampilkan nama folder saat ini dan tombol aksi:
-  - `Upload Media`: Membuka widget Cloudinary untuk unggah file.
+  - `Upload Media`: Membuka dialog pemilihan file (bisa pilih banyak file).
   - `Folder Baru`: Membuat folder baru di lokasi saat ini.
   - `Buat Teks`: Membuka modal untuk membuat catatan teks baru.
 - **Grid file**: Menampilkan file dan folder. Klik file untuk membuka pratinjau, klik folder untuk masuk ke folder tersebut.
 - **Dropdown menu (titik tiga) pada setiap item**: Rename atau hapus item.
+- **Drag and drop**: Seret file atau folder dari komputer Anda ke area konten utama untuk mengunggah. Folder akan dibuat ulang secara otomatis.
 
 ### Mobile
 - **Header**: Menampilkan judul "Neverlabs Cloud's" dan tombol folder (drawer).
@@ -120,11 +93,17 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 
 ### Halaman Pratinjau
 - Menampilkan file sesuai tipenya.
-- **Gambar**: Toolbar kualitas (Auto, HD, 4K) untuk mengubah resolusi.
-- **Video/Audio**: Pemutar bawaan.
+- **Gambar, Video, Audio**: Ditampilkan dengan elemen bawaan browser.
 - **Teks**: Tampilan editor dengan latar gelap, font monospace. Tersedia tombol **Edit** (ikon pensil) untuk mengubah isi teks.
-- **Tombol**: Salin tautan dan bagikan (jika perangkat mendukung).
-- **Informasi file**: Nama, ukuran, tanggal unggah, tipe, dan tautan ke file asli.
+- **Informasi file**: Nama, ukuran, tanggal unggah, tipe.
+
+### Pengaturan (Modal Tentang)
+- Klik ikon gear di sidebar untuk membuka modal tentang.
+- Di sini Anda dapat:
+  - Melihat informasi kontak (email, Instagram, WhatsApp, GitHub, Telegram).
+  - Mengakses tautan Lisensi MIT dan Kebijakan Privasi.
+  - **Ekspor Data**: Menyimpan metadata file ke file JSON.
+  - **Hapus Semua Data**: Menghapus seluruh file dan folder (permanen).
 
 ---
 
@@ -132,27 +111,34 @@ Dibangun murni dengan HTML, CSS, dan JavaScript, serta memanfaatkan localStorage
 
 Aplikasi ini dirancang modular sehingga mudah dikembangkan. Beberapa ide pengembangan:
 
-- **Dukungan multi-pengguna** dengan sistem login sederhana (menggunakan localStorage berbeda).
-- **Integrasi penyimpanan lain** seperti Backblaze B2 atau Supabase.
 - **Pencarian file** di dalam folder.
-- **Drag and drop** untuk unggah dan memindahkan file.
-- **Mode offline** dengan service worker.
+- **Mode offline penuh** dengan service worker.
+- **Enkripsi file** sebelum disimpan.
+- **Sinkronisasi antar perangkat** menggunakan teknologi seperti WebRTC atau library pihak ketiga.
 
 ---
 
 ## Lisensi
 
-Proyek ini dibuat untuk keperluan pribadi dan pembelajaran. Silakan gunakan, modifikasi, dan distribusikan sesuai kebutuhan. Tidak ada jaminan atau dukungan resmi.
+Proyek ini menggunakan lisensi MIT. Silakan lihat file [LICENSE](https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/LICENSE) untuk informasi lebih lanjut.
 
 ---
 
 ## Kontak
 
-Untuk pertanyaan atau saran, silakan hubungi melalui [GitHub Issues](https://github.com/nflora-ux/Cloud-s/).
+Untuk pertanyaan atau saran, silakan hubungi melalui:
+
+- Email: [userlinuxorg@gmail.com](mailto:userlinuxorg@gmail.com)
+- Instagram: [@neveerlabs](https://instagram.com/neveerlabs)
+- WhatsApp: [+62 856-1765-372](https://wa.me/628561765372)
+- GitHub: [neveerlabs](https://github.com/neveerlabs)
+- Telegram: [@Neverlabs](https://t.me/Neverlabs)
 
 ---
 
-**Catatan**: Aplikasi ini sepenuhnya berjalan di sisi klien. Pastikan untuk selalu menjaga kerahasiaan API Key dan Secret Anda.
+## Kebijakan Privasi
+
+Lihat [PRIVACY.md](https://github.com/nflora-ux/Cloud-s/blob/6420f17752e44e7fcb80f2da30a237326259fd6c/PRIVACY.md) untuk informasi tentang penanganan data.
 
 ---
 
