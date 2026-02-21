@@ -34,19 +34,19 @@ function initUpload() {
         fileInput.value = '';
     });
 
-    const fileGrid = document.getElementById('fileGrid');
-    fileGrid.addEventListener('dragover', (e) => {
+    const mainContent = document.querySelector('.main-content');
+    mainContent.addEventListener('dragover', (e) => {
         e.preventDefault();
-        fileGrid.classList.add('drag-over');
+        mainContent.classList.add('drag-over');
     });
 
-    fileGrid.addEventListener('dragleave', () => {
-        fileGrid.classList.remove('drag-over');
+    mainContent.addEventListener('dragleave', (e) => {
+        mainContent.classList.remove('drag-over');
     });
 
-    fileGrid.addEventListener('drop', async (e) => {
+    mainContent.addEventListener('drop', async (e) => {
         e.preventDefault();
-        fileGrid.classList.remove('drag-over');
+        mainContent.classList.remove('drag-over');
         const items = e.dataTransfer.items;
         if (!items) return;
 
