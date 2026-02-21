@@ -1,9 +1,11 @@
 let pendingFile = null;
+let pendingFiles = [];
 
 function initUpload() {
     const uploadBtn = document.getElementById('uploadBtn');
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
+    fileInput.multiple = true;
     fileInput.style.display = 'none';
     fileInput.accept = '*/*';
     document.body.appendChild(fileInput);
@@ -13,13 +15,79 @@ function initUpload() {
     });
 
     fileInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        pendingFile = file;
-        document.getElementById('mediaNameInput').value = file.name;
-        await populateFolderSelect(sessionStorage.getItem('currentFolderId') || null);
-        document.getElementById('uploadMetaModal').classList.add('active');
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        if (files.length === 1) {
+            pendingFile = files[0];
+            document.getElementById('mediaNameInput').value = files[0].name;
+            await populateFolderSelect(sessionStorage.getItem('currentFolderId') || null);
+            document.getElementById('uploadMetaModal').classList.add('active');
+        } else {
+            const folderId = sessionStorage.getItem('currentFolderId') || null;
+            for (const file of files) {
+                await saveFileToDB(file, file.name, folderId);
+            }
+            const current = sessionStorage.getItem('currentFolderId') || null;
+            await renderFileGrid(current);
+        }
+        fileInput.value = '';
     });
+
+    const fileGrid = document.getElementById('fileGrid');
+    fileGrid.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileGrid.classList.add('drag-over');
+    });
+
+    fileGrid.addEventListener('dragleave', () => {
+        fileGrid.classList.remove('drag-over');
+    });
+
+    fileGrid.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        fileGrid.classList.remove('drag-over');
+        const items = e.dataTransfer.items;
+        if (!items) return;
+
+        const folderId = sessionStorage.getItem('currentFolderId') || null;
+        const entries = [];
+        for (let i = 0; i < items.length; i++) {
+            const entry = items[i].webkitGetAsEntry();
+            if (entry) entries.push(entry);
+        }
+        for (const entry of entries) {
+            await processEntry(entry, folderId);
+        }
+        const current = sessionStorage.getItem('currentFolderId') || null;
+        await renderFileGrid(current);
+    });
+}
+
+async function processEntry(entry, parentId) {
+    if (entry.isFile) {
+        const file = await new Promise((resolve) => entry.file(resolve));
+        await saveFileToDB(file, file.name, parentId);
+    } else if (entry.isDirectory) {
+        const folderName = entry.name;
+        const newFolder = {
+            id: generateId(),
+            type: 'folder',
+            name: folderName,
+            parentId: parentId,
+            createdAt: Date.now()
+        };
+        await addItem(newFolder);
+        const reader = entry.createReader();
+        const readEntries = async () => {
+            const entries = await new Promise((resolve) => reader.readEntries(resolve));
+            for (const subEntry of entries) {
+                await processEntry(subEntry, newFolder.id);
+            }
+            if (entries.length > 0) await readEntries();
+        };
+        await readEntries();
+    }
 }
 
 function hideUploadMetaModal() {
