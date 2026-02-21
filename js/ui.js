@@ -1,5 +1,5 @@
-function renderFolderTree(activeId = null) {
-    const data = getData();
+async function renderFolderTree(activeId = null) {
+    const items = await getItems();
     const container = document.getElementById('folderTree');
     container.innerHTML = '';
 
@@ -8,7 +8,7 @@ function renderFolderTree(activeId = null) {
     rootItem.innerHTML = '<i class="fas fa-folder"></i> Root';
     rootItem.dataset.id = 'null';
     rootItem.addEventListener('click', () => {
-        setCurrentFolderId(null);
+        sessionStorage.removeItem('currentFolderId');
         renderFolderTree(null);
         renderFileGrid(null);
         document.getElementById('currentFolderTitle').innerText = 'Root';
@@ -16,16 +16,16 @@ function renderFolderTree(activeId = null) {
     container.appendChild(rootItem);
 
     function renderSubfolders(parentId, level = 0) {
-        const folders = data.items.filter(i => i.type === 'folder' && i.parentId === parentId);
+        const folders = items.filter(i => i.type === 'folder' && i.parentId === parentId);
         folders.forEach(f => {
             const div = document.createElement('div');
             div.className = `folder-item ${activeId === f.id ? 'active' : ''}`;
             div.style.paddingLeft = `${24 + level * 16}px`;
-            div.innerHTML = `<i class="fas fa-folder-open"></i> ${f.name}`;
+            div.innerHTML = `<i class="fas fa-folder-open"></i> ${escapeHTML(f.name)}`;
             div.dataset.id = f.id;
             div.addEventListener('click', (e) => {
                 e.stopPropagation();
-                setCurrentFolderId(f.id);
+                sessionStorage.setItem('currentFolderId', f.id);
                 renderFolderTree(f.id);
                 renderFileGrid(f.id);
                 document.getElementById('currentFolderTitle').innerText = f.name;
@@ -37,8 +37,8 @@ function renderFolderTree(activeId = null) {
     renderSubfolders(null);
 }
 
-function renderFileGrid(folderId) {
-    const items = getChildren(folderId);
+async function renderFileGrid(folderId) {
+    const items = await getChildren(folderId);
     const grid = document.getElementById('fileGrid');
     grid.innerHTML = '';
 
@@ -62,7 +62,7 @@ function renderFileGrid(folderId) {
             `;
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.card-menu')) return;
-                setCurrentFolderId(item.id);
+                sessionStorage.setItem('currentFolderId', item.id);
                 renderFolderTree(item.id);
                 renderFileGrid(item.id);
                 document.getElementById('currentFolderTitle').innerText = item.name;
@@ -82,7 +82,6 @@ function renderFileGrid(folderId) {
             });
         }
 
-        // dropdown menu
         const menuBtn = card.querySelector('.card-menu');
         const dropdown = card.querySelector('.dropdown-menu');
         menuBtn.addEventListener('click', (e) => {
@@ -95,7 +94,6 @@ function renderFileGrid(folderId) {
         grid.appendChild(card);
     });
 
-    // close dropdown when clicking outside
     document.addEventListener('click', () => {
         document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
     });
@@ -140,9 +138,9 @@ function escapeHTML(str) {
     });
 }
 
-function populateFolderSelect(selectedId = null) {
-    const data = getData();
-    const folders = data.items.filter(i => i.type === 'folder');
+async function populateFolderSelect(selectedId = null) {
+    const items = await getItems();
+    const folders = items.filter(i => i.type === 'folder');
     const select = document.getElementById('mediaFolderSelect');
     select.innerHTML = '<option value="null">Root</option>';
     folders.forEach(f => {
