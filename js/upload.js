@@ -21,14 +21,14 @@ function initUpload() {
         if (files.length === 1) {
             pendingFile = files[0];
             document.getElementById('mediaNameInput').value = files[0].name;
-            await populateFolderSelect(sessionStorage.getItem('currentFolderId') || null);
+            await populateFolderSelect(sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null));
             document.getElementById('uploadMetaModal').classList.add('active');
         } else {
-            const folderId = sessionStorage.getItem('currentFolderId') || null;
+            const folderId = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
             for (const file of files) {
                 await saveFileToDB(file, file.name, folderId);
             }
-            const current = sessionStorage.getItem('currentFolderId') || null;
+            const current = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
             await renderFileGrid(current);
         }
         fileInput.value = '';
@@ -50,7 +50,7 @@ function initUpload() {
         const items = e.dataTransfer.items;
         if (!items) return;
 
-        const folderId = sessionStorage.getItem('currentFolderId') || null;
+        const folderId = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
         const entries = [];
         for (let i = 0; i < items.length; i++) {
             const entry = items[i].webkitGetAsEntry();
@@ -59,7 +59,7 @@ function initUpload() {
         for (const entry of entries) {
             await processEntry(entry, folderId);
         }
-        const current = sessionStorage.getItem('currentFolderId') || null;
+        const current = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
         await renderFileGrid(current);
     });
 }
@@ -115,7 +115,7 @@ async function uploadTextContent(name, content, folderId) {
     const blob = new Blob([content], { type: 'text/plain' });
     const file = new File([blob], name.endsWith('.txt') ? name : name + '.txt', { type: 'text/plain' });
     await saveFileToDB(file, name, folderId);
-    const current = sessionStorage.getItem('currentFolderId') || null;
+    const current = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
     await renderFileGrid(current);
 }
 
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!pendingFile) return;
         await saveFileToDB(pendingFile, name, folderId);
         hideUploadMetaModal();
-        const current = sessionStorage.getItem('currentFolderId') || null;
+        const current = sessionStorage.getItem('currentFolderId') || (currentHiddenMode ? 'hidden' : null);
         await renderFileGrid(current);
     });
 
