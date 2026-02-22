@@ -26,13 +26,26 @@
 
         <main class="main-content">
             <header class="content-header">
-                <h3 id="currentFolderTitle">Root</h3>
-                <span class="mobile-header-title">Neverlabs Cloud's</span>
-                <button id="drawerToggleBtn"><i class="fas fa-folder"></i></button>
-                <div class="header-buttons">
-                    <button id="uploadBtn" class="btn-primary"><i class="fas fa-upload"></i> <span>Upload Media</span></button>
-                    <button id="newFolderBtn" class="btn-primary"><i class="fas fa-folder-plus"></i> <span>Folder Baru</span></button>
-                    <button id="newTextNoteBtn" class="btn-primary"><i class="fas fa-file-alt"></i> <span>Buat Teks</span></button>
+                <div class="header-left">
+                    <h3 id="currentFolderTitle">Root</h3>
+                    <span class="mobile-header-title" id="mobileTitle">Neverlabs Cloud's</span>
+                </div>
+                <div class="header-right">
+                    <div class="desktop-search">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search Root">
+                    </div>
+                    <div class="mobile-search">
+                        <input type="text" id="mobileSearchInput" placeholder="Cari...">
+                    </div>
+                    <button id="exitHiddenBtn" class="btn-icon" title="Keluar dari folder tersembunyi" style="display: none;"><i class="fas fa-door-open"></i></button>
+                    <button id="drawerToggleBtn"><i class="fas fa-folder"></i></button>
+                    <div class="header-buttons">
+                        <button id="exitHiddenBtnMobile" class="btn-icon" title="Keluar" style="display: none;"><i class="fas fa-door-open"></i></button>
+                        <button id="uploadBtn" class="btn-icon" title="Upload Media"><i class="fas fa-upload"></i></button>
+                        <button id="newFolderBtn" class="btn-icon" title="Folder Baru"><i class="fas fa-folder-plus"></i></button>
+                        <button id="newTextNoteBtn" class="btn-icon" title="Buat Teks"><i class="fas fa-file-alt"></i></button>
+                    </div>
                 </div>
             </header>
             <div class="file-grid" id="fileGrid"></div>
@@ -96,6 +109,54 @@
         </div>
     </div>
 
+    <div id="hiddenPasswordModal" class="modal">
+        <div class="modal-content">
+            <h3 id="hiddenModalTitle">Masukkan Password</h3>
+            <input type="password" id="hiddenPasswordInput" placeholder="Password" autocomplete="off">
+            <div id="hiddenQuestionSection" style="display:none;">
+                <input type="text" id="hiddenQuestionInput" placeholder="Pertanyaan" autocomplete="off">
+                <input type="text" id="hiddenAnswerInput" placeholder="Jawaban" autocomplete="off">
+            </div>
+            <div id="hiddenRecoverySection" style="display:none;">
+                <p style="color:#ffaa33;">Password salah 3 kali. Jawab pertanyaan untuk memulihkan.</p>
+                <input type="text" id="recoveryAnswerInput" placeholder="Jawaban pertanyaan" autocomplete="off">
+            </div>
+            <div class="modal-actions">
+                <button id="hiddenCancelBtn">Batal</button>
+                <button id="hiddenSubmitBtn" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenChangePasswordModal" class="modal">
+        <div class="modal-content">
+            <h3>Ubah Password</h3>
+            <input type="password" id="oldPasswordInput" placeholder="Password lama" autocomplete="off">
+            <input type="password" id="newPasswordInput" placeholder="Password baru" autocomplete="off">
+            <input type="password" id="confirmPasswordInput" placeholder="Konfirmasi password baru" autocomplete="off">
+            <input type="text" id="newQuestionInput" placeholder="Pertanyaan baru (opsional)" autocomplete="off">
+            <input type="text" id="newAnswerInput" placeholder="Jawaban baru (opsional)" autocomplete="off">
+            <div class="modal-actions">
+                <button id="cancelChangeBtn">Batal</button>
+                <button id="saveChangeBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenRecoverModal" class="modal">
+        <div class="modal-content">
+            <h3>Pulihkan Password</h3>
+            <input type="password" id="recoverNewPassword" placeholder="Password baru" autocomplete="off">
+            <input type="password" id="recoverConfirmPassword" placeholder="Konfirmasi password baru" autocomplete="off">
+            <input type="text" id="recoverNewQuestion" placeholder="Pertanyaan baru (opsional)" autocomplete="off">
+            <input type="text" id="recoverNewAnswer" placeholder="Jawaban baru (opsional)" autocomplete="off">
+            <div class="modal-actions">
+                <button id="cancelRecoverBtn">Batal</button>
+                <button id="saveRecoverBtn" class="btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <div id="setupModal" class="modal">
         <div class="modal-content">
             <h3>Tentang Aplikasi</h3>
@@ -120,6 +181,12 @@
             <div class="data-buttons">
                 <button id="exportDataBtn" class="btn-secondary">Ekspor Data</button>
                 <button id="deleteAllDataBtn" class="btn-secondary" style="color:#b33;">Hapus Semua Data</button>
+            </div>
+
+            <h4 style="color:#d6e3ff; margin-bottom:10px;">Folder Tersembunyi</h4>
+            <div class="data-buttons">
+                <button id="changeHiddenPasswordBtn" class="btn-secondary">Ubah Password</button>
+                <button id="deleteHiddenPasswordBtn" class="btn-secondary" style="color:#b33;">Hapus Password</button>
             </div>
 
             <div class="modal-actions">
