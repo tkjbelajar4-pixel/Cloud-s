@@ -235,7 +235,7 @@ function showHiddenSetup() {
         }
         await setSetting('hidden', { password, question, answer });
         modal.classList.remove('active');
-        alert('Password tersimpan. Klik judul lagi untuk masuk.');
+        alert('Password tersimpan. Klik judul sekali lagi untuk masuk kedalam folder tersembunyi.');
     });
 
     const newCancel = cancel.cloneNode(true);
@@ -483,7 +483,7 @@ async function showDeleteHiddenPassword() {
         updateHiddenUI();
         alert('Password folder tersembunyi telah dihapus');
     } else {
-        alert('Password salah');
+        alert('Password salah!');
     }
 }
 
