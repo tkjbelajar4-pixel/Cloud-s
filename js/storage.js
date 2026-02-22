@@ -1,5 +1,5 @@
 const DB_NAME = 'NeverlabsDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 let db = null;
 
 function openDB() {
@@ -20,6 +20,12 @@ function openDB() {
             }
             if (!db.objectStoreNames.contains('files')) {
                 db.createObjectStore('files', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('settings')) {
+                db.createObjectStore('settings', { keyPath: 'key' });
+            }
+            if (!db.objectStoreNames.contains('thumbnails')) {
+                db.createObjectStore('thumbnails', { keyPath: 'fileId' });
             }
         };
     });
@@ -89,6 +95,7 @@ async function deleteItem(id) {
     }
     if (item.type === 'file' && item.fileId) {
         await deleteFile(item.fileId);
+        await deleteThumbnail(item.fileId);
     }
     const db = await openDB();
     return new Promise((resolve, reject) => {
@@ -134,12 +141,69 @@ async function deleteFile(fileId) {
     });
 }
 
+async function saveThumbnail(fileId, blob) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('thumbnails', 'readwrite');
+        const store = tx.objectStore('thumbnails');
+        const request = store.put({ fileId, blob });
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getThumbnail(fileId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('thumbnails', 'readonly');
+        const store = tx.objectStore('thumbnails');
+        const request = store.get(fileId);
+        request.onsuccess = () => resolve(request.result ? request.result.blob : null);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteThumbnail(fileId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('thumbnails', 'readwrite');
+        const store = tx.objectStore('thumbnails');
+        const request = store.delete(fileId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getSetting(key) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('settings', 'readonly');
+        const store = tx.objectStore('settings');
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result ? request.result.value : null);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function setSetting(key, value) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('settings', 'readwrite');
+        const store = tx.objectStore('settings');
+        const request = store.put({ key, value });
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
 async function clearAll() {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(['items', 'files'], 'readwrite');
+        const tx = db.transaction(['items', 'files', 'settings', 'thumbnails'], 'readwrite');
         tx.objectStore('items').clear();
         tx.objectStore('files').clear();
+        tx.objectStore('settings').clear();
+        tx.objectStore('thumbnails').clear();
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
     });
@@ -147,7 +211,8 @@ async function clearAll() {
 
 async function exportData() {
     const items = await getItems();
-    return JSON.stringify(items, null, 2);
+    const settings = await getSetting('hidden') || {};
+    return JSON.stringify({ items, settings }, null, 2);
 }
 
 function generateId() {
