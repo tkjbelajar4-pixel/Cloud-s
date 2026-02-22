@@ -1,19 +1,36 @@
+let currentHiddenMode = false;
+
 async function renderFolderTree(activeId = null) {
     const items = await getItems();
     const container = document.getElementById('folderTree');
     container.innerHTML = '';
 
     const rootItem = document.createElement('div');
-    rootItem.className = `folder-item ${activeId === null ? 'active' : ''}`;
+    rootItem.className = `folder-item ${activeId === null && !currentHiddenMode ? 'active' : ''}`;
     rootItem.innerHTML = '<i class="fas fa-folder"></i> Root';
     rootItem.dataset.id = 'null';
     rootItem.addEventListener('click', () => {
+        if (currentHiddenMode) return;
         sessionStorage.removeItem('currentFolderId');
         renderFolderTree(null);
         renderFileGrid(null);
         document.getElementById('currentFolderTitle').innerText = 'Root';
     });
     container.appendChild(rootItem);
+
+    if (currentHiddenMode) {
+        const hiddenRoot = document.createElement('div');
+        hiddenRoot.className = `folder-item ${activeId === 'hidden' ? 'active' : ''}`;
+        hiddenRoot.innerHTML = '<i class="fas fa-folder"></i> Hidden Root';
+        hiddenRoot.dataset.id = 'hidden';
+        hiddenRoot.addEventListener('click', () => {
+            sessionStorage.setItem('currentFolderId', 'hidden');
+            renderFolderTree('hidden');
+            renderFileGrid('hidden');
+            document.getElementById('currentFolderTitle').innerText = 'Hidden Root';
+        });
+        container.appendChild(hiddenRoot);
+    }
 
     function renderSubfolders(parentId, level = 0) {
         const folders = items.filter(i => i.type === 'folder' && i.parentId === parentId);
@@ -34,7 +51,7 @@ async function renderFolderTree(activeId = null) {
             renderSubfolders(f.id, level + 1);
         });
     }
-    renderSubfolders(null);
+    renderSubfolders(currentHiddenMode ? 'hidden' : null);
 }
 
 async function renderFileGrid(folderId) {
@@ -47,7 +64,13 @@ async function renderFileGrid(folderId) {
         return;
     }
 
-    items.forEach(item => {
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const mobileSearchTerm = document.getElementById('mobileSearchInput')?.value.toLowerCase() || '';
+    const term = searchTerm || mobileSearchTerm;
+
+    const filtered = term ? items.filter(i => i.name.toLowerCase().includes(term)) : items;
+
+    filtered.forEach(item => {
         const card = document.createElement('div');
         card.className = `file-card ${item.type}`;
         card.dataset.id = item.id;
@@ -69,8 +92,9 @@ async function renderFileGrid(folderId) {
             });
         } else {
             const iconClass = getFileIconFA(item.mimeType);
+            const thumbHtml = `<div class="file-thumbnail" data-fileid="${item.fileId}"></div>`;
             card.innerHTML = `
-                <div class="file-icon"><i class="${iconClass}" style="font-size:2.8rem;"></i></div>
+                ${thumbHtml}
                 <div class="file-name">${escapeHTML(item.name)}</div>
                 <div class="file-meta">${new Date(item.createdAt).toLocaleDateString()}</div>
                 <div class="card-menu"><i class="fas fa-ellipsis-v"></i></div>
@@ -80,6 +104,7 @@ async function renderFileGrid(folderId) {
                 if (e.target.closest('.card-menu')) return;
                 window.open(`preview.html?id=${item.id}`, '_blank');
             });
+            loadThumbnail(item);
         }
 
         const menuBtn = card.querySelector('.card-menu');
@@ -97,6 +122,80 @@ async function renderFileGrid(folderId) {
     document.addEventListener('click', () => {
         document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
     });
+}
+
+async function loadThumbnail(item) {
+    const thumbContainer = document.querySelector(`.file-thumbnail[data-fileid="${item.fileId}"]`);
+    if (!thumbContainer) return;
+    const mime = item.mimeType || '';
+    if (!mime.startsWith('image/') && !mime.startsWith('video/')) {
+        thumbContainer.innerHTML = `<i class="fas fa-file" style="font-size:2.8rem; color:#cfdfee;"></i>`;
+        return;
+    }
+    let cached = await getThumbnail(item.fileId);
+    if (cached) {
+        const url = URL.createObjectURL(cached);
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'file-thumbnail';
+        thumbContainer.replaceWith(img);
+        return;
+    }
+    const blob = await getFile(item.fileId);
+    if (!blob) {
+        thumbContainer.innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:2.8rem; color:#b33;"></i>`;
+        return;
+    }
+    if (mime.startsWith('image/')) {
+        try {
+            const bitmap = await createImageBitmap(blob);
+            const canvas = document.createElement('canvas');
+            canvas.width = 150;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(bitmap, 0, 0, 150, 100);
+            canvas.toBlob(async (thumbBlob) => {
+                if (thumbBlob) {
+                    await saveThumbnail(item.fileId, thumbBlob);
+                    const url = URL.createObjectURL(thumbBlob);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'file-thumbnail';
+                    thumbContainer.replaceWith(img);
+                }
+            }, 'image/jpeg', 0.7);
+        } catch {
+            thumbContainer.innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:2.8rem; color:#b33;"></i>`;
+        }
+    } else if (mime.startsWith('video/')) {
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(blob);
+        video.crossOrigin = 'anonymous';
+        video.addEventListener('loadeddata', () => {
+            video.currentTime = 1;
+        });
+        video.addEventListener('seeked', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 150;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, 150, 100);
+            canvas.toBlob(async (thumbBlob) => {
+                if (thumbBlob) {
+                    await saveThumbnail(item.fileId, thumbBlob);
+                    const url = URL.createObjectURL(thumbBlob);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'file-thumbnail';
+                    thumbContainer.replaceWith(img);
+                }
+            }, 'image/jpeg', 0.7);
+            URL.revokeObjectURL(video.src);
+        });
+        video.addEventListener('error', () => {
+            thumbContainer.innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:2.8rem; color:#b33;"></i>`;
+        });
+    }
 }
 
 function populateDropdown(dropdown, item) {
